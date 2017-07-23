@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col-md-4">
+
+    <div class="card">
+
+      <div class="builder">
+        <div class="builder-source">
+          <ngx-dnd-container
+            class="root-container"
+            [model]="sourceBuilderTools"
+            [dropZones]="['builder-target']"
+            [copy]="true"
+            [droppableItemClass]="droppableItemClass"
+            (drag)="builderDrag($event)">
+            <ng-template let-item="model">
+              <i class="{{ item.icon }}"></i>
+              {{item.name}}
+            </ng-template>
+          </ngx-dnd-container>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="col-md-8">
+
+    <div class="card">
+      <div class="builder">
+        <div class="builder-target">
+
+          <ngx-dnd-container
+            (drop)="update()"
+            (remove)="update()"
+            class="root-container"
+            [model]="definition"
+            dropZone="builder-target"
+            [removeOnSpill]="true"
+            [droppableItemClass]="droppableItemClass">
+
+            <ng-template let-model="model" let-template="template">
+
+              <div class="card">
+                <div class="card-header" (click)="toggle[model.key]=!toggle[model.key]">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="{{icons[model.type]}}"></i>
+                    </span>
+                    <input (change)="update()" class="form-control" [(ngModel)]="model.key">
+                  </div>
+                </div>
+                  <div class="collapse card-block" [class.show]="toggle[model.key]">
+
+                    <div [ngSwitch]="model.type">
+                      <div *ngSwitchDefault>
+                        <table>
+                          <tr>
+                            <th>Type</th>
+                            <td>
+                              <select (change)="update()"  class="form-control" [(ngModel)]="model.type">
+                                <option *ngFor="let type of getTypes()"
+                                        [value]="type">{{type}}</option>
+                              </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>Label</th>
+                            <td><input (change)="update()" class="form-control" [(ngModel)]="model.options.label"></td>
+                          </tr>
+                          <tr>
+                            <th>Placeholder</th>
+                            <td><input (change)="update()" class="form-control" [(ngModel)]="model.options.placeholder"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+
+                </div>
+              </div>
+
+            </ng-template>
+          </ngx-dnd-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <button class="btn btn-block btn-outline-secondary" (click)="toggle['_def'] = !toggle['_def']">Show Definition</button>
+      <div class="collapse" [class.show]="toggle['_def']">
+        <pre>{{definition | json}}</pre>
+      </div>
+    </div>
+  </div>
+</div>
